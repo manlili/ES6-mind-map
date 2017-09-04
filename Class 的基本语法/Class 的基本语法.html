@@ -1,0 +1,614 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta content="text/css" http-equiv="Content-Style-Type">
+<title>Class 的基本语法</title>
+</head>
+<body>
+<h1 align="center" class="root">
+<a name="0bgutu8ld8918vslhlmci69jr5">Class 的基本语法</a>
+</h1>
+<h2 class="topic">
+<a name="01f9e6cts503nbvgl152fum4l3">概念</a>
+</h2>
+<h3 class="topic">
+<a name="0e2addc7f3ll945vtb1kna07eg">&nbsp;JavaScript 语言中，生成实例对象的传统方法是通过构造函数</a>
+</h3>
+<h3 class="topic">
+<a name="26lirngk5bt4qjgs19o4mt7fjd">&nbsp;&nbsp;function Point(x, y) {&#13;
+  this.x = x;&#13;
+  this.y = y;&#13;
+}&#13;
+&#13;
+Point.prototype.toString = function () {&#13;
+  return '(' + this.x + ', ' + this.y + ')';&#13;
+};&#13;
+&#13;
+var p = new Point(1, 2);</a>
+</h3>
+<h3 class="topic">
+<a name="0iub44cfcsn88jqm03ile2f4ho">&nbsp;ES6 提供了更接近传统语言的写法，引入了 Class（类）这个概念，作为对象的模板。通过class关键字，可以定义类</a>
+</h3>
+<h3 class="topic">
+<a name="5kcg22gk2821rpi7219adfvikh">&nbsp;&nbsp;//定义类&#13;
+class Point {&#13;
+  constructor(x, y) {&#13;
+    this.x = x;&#13;
+    this.y = y;&#13;
+  }&#13;
+&#13;
+  toString() {&#13;
+    return '(' + this.x + ', ' + this.y + ')';&#13;
+  }&#13;
+}</a>
+</h3>
+<h3 class="topic">
+<a name="4m6krle3hatildj6uespe30i62">&nbsp;&nbsp;&nbsp;constructor方法，这就是构造方法</a>
+</h3>
+<h3 class="topic">
+<a name="4jqdjue6sbmpkegnignjfvg8k6">&nbsp;ES6 的类，完全可以看作构造函数的另一种写法</a>
+</h3>
+<h3 class="topic">
+<a name="348hu3ugsvv49levis2u1epugf">&nbsp;&nbsp;class Point {&#13;
+  // ...&#13;
+}&#13;
+&#13;
+typeof Point // "function"&#13;
+Point === Point.prototype.constructor // true</a>
+</h3>
+<h3 class="topic">
+<a name="2d09chrabe7p5euhacphilqe44">&nbsp;使用的时候，也是直接对类使用new命令，跟构造函数的用法完全一致</a>
+</h3>
+<h3 class="topic">
+<a name="085a2m0jjboqknagmusp1890fp">&nbsp;&nbsp;class Bar {&#13;
+  doStuff() {&#13;
+    console.log('stuff');&#13;
+  }&#13;
+}&#13;
+&#13;
+var b = new Bar();&#13;
+b.doStuff() // "stuff"</a>
+</h3>
+<h3 class="topic">
+<a name="7i0i3u9hmdklrrr98gj25u3acn">&nbsp;构造函数的prototype属性，在 ES6 的&ldquo;类&rdquo;上面继续存在</a>
+</h3>
+<h3 class="topic">
+<a name="6vbl303tqpkoj9d5962ltaonjo">&nbsp;&nbsp;class Point {&#13;
+  constructor() {}&#13;
+  toString() {}&#13;
+  toValue() {}&#13;
+}&#13;
+&#13;
+// 等同于&#13;
+Point.prototype = {&#13;
+  constructor() {},&#13;
+  toString() {},&#13;
+  toValue() {},&#13;
+};</a>
+</h3>
+<h3 class="topic">
+<a name="1c7j260vcvmp8q17tnh15ijd9i">&nbsp;由于类的方法都定义在prototype对象上面，所以类的新方法可以添加在prototype对象上面。Object.assign方法可以很方便地一次向类添加多个方法</a>
+</h3>
+<h3 class="topic">
+<a name="3nqbu365p6i6arb0ivhurqb97l">&nbsp;&nbsp;class Point {&#13;
+  constructor(){&#13;
+    // ...&#13;
+  }&#13;
+}&#13;
+&#13;
+Object.assign(Point.prototype, {&#13;
+  toString(){},&#13;
+  toValue(){}&#13;
+});</a>
+</h3>
+<h3 class="topic">
+<a name="7d60pgpkjlflockh7nijnikk5o">&nbsp;类的内部所有定义的方法，都是不可枚举的</a>
+</h3>
+<h3 class="topic">
+<a name="6fa29e0a9g2sk08b5gbgh3ilg5">&nbsp;&nbsp;class Point {&#13;
+  constructor(x, y) {&#13;
+    // ...&#13;
+  }&#13;
+&#13;
+  toString() {&#13;
+    // ...&#13;
+  }&#13;
+}&#13;
+&#13;
+Object.keys(Point.prototype)&#13;
+// []&#13;
+Object.getOwnPropertyNames(Point.prototype)&#13;
+// ["constructor","toString"]</a>
+</h3>
+<h3 class="topic">
+<a name="2gc6pvmf4k66dma5f3nv26qhdq">&nbsp;&nbsp;&nbsp;ES5所有定义的方法，都是可枚举的</a>
+</h3>
+<h3 class="topic">
+<a name="1kpiem8uofaruefoo6q242uc4f">&nbsp;&nbsp;&nbsp;&nbsp;var Point = function (x, y) {&#13;
+  // ...&#13;
+};&#13;
+&#13;
+Point.prototype.toString = function() {&#13;
+  // ...&#13;
+};&#13;
+&#13;
+Object.keys(Point.prototype)&#13;
+// ["toString"]&#13;
+Object.getOwnPropertyNames(Point.prototype)&#13;
+// ["constructor","toString"]</a>
+</h3>
+<h3 class="topic">
+<a name="2ie2n29cqjffb2d6no98mmk3pq">&nbsp;类的属性名，可以采用表达式</a>
+</h3>
+<h3 class="topic">
+<a name="6pepnj58hgib1r3tkk1l7vt8o3">&nbsp;&nbsp;let methodName = 'getArea';&#13;
+&#13;
+class Square {&#13;
+  constructor(length) {&#13;
+    // ...&#13;
+  }&#13;
+&#13;
+  [methodName]() {&#13;
+    // ...&#13;
+  }&#13;
+}</a>
+</h3>
+<h2 class="topic">
+<a name="5ntespcj4lqik8vq13j2597mg5">constructor 方法</a>
+</h2>
+<h3 class="topic">
+<a name="0520mpa4fd9hau3hnlnlnb9mdk">&nbsp;constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加</a>
+</h3>
+<h3 class="topic">
+<a name="4k57ftm4q09hho6h209kkk41kt">&nbsp;&nbsp;class Point {&#13;
+}&#13;
+&#13;
+// 等同于&#13;
+class Point {&#13;
+  constructor() {}&#13;
+}</a>
+</h3>
+<h3 class="topic">
+<a name="5ccg7o7iihmvgh76vc05buh1gg">&nbsp;constructor方法默认返回实例对象（即this）和ES5的构造方法一样，省略return this，完全可以指定返回另外一个对象</a>
+</h3>
+<h3 class="topic">
+<a name="0l92prqdjfjo6ou6rvrpf4j11u">&nbsp;&nbsp;class Foo {&#13;
+  constructor() {&#13;
+    return Object.create(null);&#13;
+  }&#13;
+}&#13;
+&#13;
+new Foo() instanceof Foo&#13;
+// false</a>
+</h3>
+<h2 class="topic">
+<a name="0erkb1n2afsm98qnfs7s0gkg2g">类的实例对象</a>
+</h2>
+<h3 class="topic">
+<a name="50itonuqhso1mf35urngajicip">&nbsp;生成类的实例对象的写法，与 ES5 完全一样，也是使用new命令</a>
+</h3>
+<h3 class="topic">
+<a name="4rdnre49pq1qeba9cej5vfuimk">&nbsp;&nbsp;class Point {&#13;
+  // ...&#13;
+}&#13;
+&#13;
+// 报错&#13;
+var point = Point(2, 3);&#13;
+&#13;
+// 正确&#13;
+var point = new Point(2, 3);</a>
+</h3>
+<h3 class="topic">
+<a name="4tgg2jnldv6rgh1jm44ra760t0">&nbsp;与 ES5 一样，实例的属性除非显式定义在其本身（即定义在this对象上），否则都是定义在原型上（即定义在class上）</a>
+</h3>
+<h3 class="topic">
+<a name="265qha37o4h6qhed1lu3bqbgg9">&nbsp;&nbsp;//定义类&#13;
+class Point {&#13;
+&#13;
+  constructor(x, y) {&#13;
+    this.x = x;&#13;
+    this.y = y;&#13;
+  }&#13;
+&#13;
+  toString() {&#13;
+    return '(' + this.x + ', ' + this.y + ')';&#13;
+  }&#13;
+&#13;
+}&#13;
+&#13;
+var point = new Point(2, 3);&#13;
+&#13;
+point.toString() // (2, 3)&#13;
+&#13;
+point.hasOwnProperty('x') // true&#13;
+point.hasOwnProperty('y') // true&#13;
+point.hasOwnProperty('toString') // false&#13;
+point.__proto__.hasOwnProperty('toString') // true</a>
+</h3>
+<h3 class="topic">
+<a name="3pbso5f7tjm80g0dsk9p7itvcb">&nbsp;&nbsp;&nbsp;上面代码中，x和y都是实例对象point自身的属性（因为定义在this变量上），所以hasOwnProperty方法返回true，而toString是原型对象的属性（因为定义在Point类上），所以hasOwnProperty方法返回false。这些都与 ES5 的行为保持一致</a>
+</h3>
+<h3 class="topic">
+<a name="5n95lcc66r7o8sb5pbgk8hhjel">&nbsp;与 ES5 一样，类的所有实例共享一个原型对象</a>
+</h3>
+<h3 class="topic">
+<a name="3a8qhi5rp4vagtmfcvnesrnkas">&nbsp;&nbsp;var p1 = new Point(2,3);&#13;
+var p2 = new Point(3,2);&#13;
+p1.prototype=== p2.prototype&#13;
+//true&#13;
+p1.__proto__ === p2.__proto__&#13;
+//true</a>
+</h3>
+<h3 class="topic">
+<a name="4bu7205ut0g1ul1gko6geb5m7d">&nbsp;&nbsp;&nbsp;面代码中，p1和p2都是Point的实例，它们的原型都是Point.prototype，所以__proto__属性是相等的</a>
+</h3>
+<h2 class="topic">
+<a name="4j21tjtldfjnn0485hhgfj6tso">Class 表达式</a>
+</h2>
+<h3 class="topic">
+<a name="7c2gt3d6gh98ssjd6q1l9jpcr0">&nbsp;与函数一样，类也可以使用表达式的形式定义</a>
+</h3>
+<h3 class="topic">
+<a name="0phcor6t2f7hfe2m04sj8ad911">&nbsp;&nbsp;const MyClass = class Me {&#13;
+  getClassName() {&#13;
+    return Me.name;&#13;
+  }&#13;
+};</a>
+</h3>
+<h3 class="topic">
+<a name="0bhhendk58q94pscb2coqhlq2v">&nbsp;&nbsp;&nbsp;需要注意的是，这个类的名字是MyClass而不是Me，Me只在 Class 的内部代码可用，指代当前类</a>
+</h3>
+<h3 class="topic">
+<a name="55aues7f4nufp39l5gd9jc0f3j">&nbsp;&nbsp;&nbsp;&nbsp;let inst = new MyClass();&#13;
+inst.getClassName() // Me&#13;
+Me.name // ReferenceError: Me is not defined</a>
+</h3>
+<h3 class="topic">
+<a name="1aermvtq8jcnvfqcmrfvlpcr1s">&nbsp;如果类的内部没用到的话，可以省略Me，也就是可以写成下面的形式</a>
+</h3>
+<h3 class="topic">
+<a name="62j89e1o8rp2njjfm6itf2p60i">&nbsp;&nbsp;const MyClass = class { /* ... */ };</a>
+</h3>
+<h3 class="topic">
+<a name="5do2jhqpcsbrv2mhooh2ldhu0g">&nbsp;采用 Class 表达式，可以写出立即执行的 Class</a>
+</h3>
+<h3 class="topic">
+<a name="2hglp0ptl7cs97ciu30adce66a">&nbsp;&nbsp;let person = new class {&#13;
+  constructor(name) {&#13;
+    this.name = name;&#13;
+  }&#13;
+&#13;
+  sayName() {&#13;
+    console.log(this.name);&#13;
+  }&#13;
+}('张三');&#13;
+&#13;
+person.sayName(); // "张三"</a>
+</h3>
+<h2 class="topic">
+<a name="29mko7ikouqdjnd633bm958as3">不存在变量提升</a>
+</h2>
+<h3 class="topic">
+<a name="1253n0ruhafriab2uen7f7iucb">&nbsp;类不存在变量提升（hoist），这一点与 ES5 完全不同</a>
+</h3>
+<h3 class="topic">
+<a name="7qou7qccf7mi3jtcfhmdb31jdr">&nbsp;&nbsp;new Foo(); // ReferenceError&#13;
+class Foo {}</a>
+</h3>
+<h2 class="topic">
+<a name="28db85caid6nervrg74koacggi">私有方法</a>
+</h2>
+<h3 class="topic">
+<a name="0fnv6emt5tf934la2nbvp49dbr">&nbsp;一种做法是在命名上加以区别</a>
+</h3>
+<h3 class="topic">
+<a name="0j36g9a0a02nmvpl0u23a7k7ub">&nbsp;&nbsp;class Widget {&#13;
+&#13;
+  // 公有方法&#13;
+  foo (baz) {&#13;
+    this._bar(baz);&#13;
+  }&#13;
+&#13;
+  // 私有方法&#13;
+  _bar(baz) {&#13;
+    return this.snaf = baz;&#13;
+  }&#13;
+&#13;
+  // ...&#13;
+}</a>
+</h3>
+<h3 class="topic">
+<a name="7sv8196gt79uj6bo5evaaag9si">&nbsp;&nbsp;&nbsp;_bar方法前面的下划线，表示这是一个只限于内部使用的私有方法。但是，这种命名是不保险的，在类的外部，还是可以调用到这个方法</a>
+</h3>
+<h3 class="topic">
+<a name="0cbnkqp5ffh88cca2701e0nf5i">&nbsp;另一种方法就是索性将私有方法移出模块，因为模块内部的所有方法都是对外可见的</a>
+</h3>
+<h3 class="topic">
+<a name="0fm219omuf1kp0qisp2u1cctr3">&nbsp;&nbsp;class Widget {&#13;
+  foo (baz) {&#13;
+    bar.call(this, baz);&#13;
+  }&#13;
+&#13;
+  // ...&#13;
+}&#13;
+&#13;
+function bar(baz) {&#13;
+  return this.snaf = baz;&#13;
+}</a>
+</h3>
+<h3 class="topic">
+<a name="1uggglc7064sf8ag6hush35592">&nbsp;&nbsp;&nbsp;面代码中，foo是公有方法，内部调用了bar.call(this, baz)。这使得bar实际上成为了当前模块的私有方法</a>
+</h3>
+<h3 class="topic">
+<a name="5j89e8h02n8ca2195vvhuq8ft0">&nbsp;还有一种方法是利用Symbol值的唯一性，将私有方法的名字命名为一个Symbol值</a>
+</h3>
+<h3 class="topic">
+<a name="672sgq8tqjfeeooqhio714ecj3">&nbsp;&nbsp;const bar = Symbol('bar');&#13;
+const snaf = Symbol('snaf');&#13;
+&#13;
+export default class myClass{&#13;
+&#13;
+  // 公有方法&#13;
+  foo(baz) {&#13;
+    this[bar](baz);&#13;
+  }&#13;
+&#13;
+  // 私有方法&#13;
+  [bar](baz) {&#13;
+    return this[snaf] = baz;&#13;
+  }&#13;
+&#13;
+  // ...&#13;
+};</a>
+</h3>
+<h3 class="topic">
+<a name="0pjj3nkse546crfcms19993o7j">&nbsp;&nbsp;&nbsp;上面代码中，bar和snaf都是Symbol值，导致第三方无法获取到它们，因此达到了私有方法和私有属性的效果</a>
+</h3>
+<h2 class="topic">
+<a name="0uep60pm9p8d6gsd0072km6u68">name 属性</a>
+</h2>
+<h3 class="topic">
+<a name="294h9fsisp6957rejvrsi552cb">&nbsp;class Point {}&#13;
+Point.name // "Point"</a>
+</h3>
+<h2 class="topic">
+<a name="0803nntda9cibk8u9bgdegu0oc">Class 的取值函数（getter）和存值函数（setter）</a>
+</h2>
+<h3 class="topic">
+<a name="022pf8m41ith9snvi66tau776t">&nbsp;与 ES5 一样，在&ldquo;类&rdquo;的内部可以使用get和set关键字，对某个属性设置存值函数和取值函数，拦截该属性的存取行为</a>
+</h3>
+<h3 class="topic">
+<a name="1ka9k3svjfooeeoumvt598s50u">&nbsp;&nbsp;class MyClass {&#13;
+  constructor() {&#13;
+    // ...&#13;
+  }&#13;
+  get prop() {&#13;
+    return 'getter';&#13;
+  }&#13;
+  set prop(value) {&#13;
+    console.log('setter: '+value);&#13;
+  }&#13;
+}&#13;
+&#13;
+let inst = new MyClass();&#13;
+&#13;
+inst.prop = 123;&#13;
+// setter: 123&#13;
+&#13;
+inst.prop&#13;
+// 'getter'</a>
+</h3>
+<h2 class="topic">
+<a name="28sf6f0pdqutebmirb7ik605gl">Class 的静态方法</a>
+</h2>
+<h3 class="topic">
+<a name="5umernfge86l4a62u4sl384m5i">&nbsp;类相当于实例的原型，所有在类中定义的方法，都会被实例继承。如果在一个方法前，加上static关键字，就表示该方法不会被实例继承，而是直接通过类来调用，这就称为&ldquo;静态方法&rdquo;</a>
+</h3>
+<h3 class="topic">
+<a name="5f7m1142nf23v8pq4k7280ckju">&nbsp;&nbsp;class Foo {&#13;
+  static classMethod() {&#13;
+    return 'hello';&#13;
+  }&#13;
+}&#13;
+&#13;
+Foo.classMethod() // 'hello'&#13;
+&#13;
+var foo = new Foo();&#13;
+foo.classMethod()&#13;
+// TypeError: foo.classMethod is not a function</a>
+</h3>
+<h3 class="topic">
+<a name="5jifl9849jjnphrn0anv4uqocc">&nbsp;如果静态方法包含this关键字，这个this指的是类，而不是实例</a>
+</h3>
+<h3 class="topic">
+<a name="47g6pb97dapl83kcjrslv49mdn">&nbsp;&nbsp;class Foo {&#13;
+  static bar () {&#13;
+    this.baz();&#13;
+  }&#13;
+  static baz () {&#13;
+    console.log('hello');&#13;
+  }&#13;
+  baz () {&#13;
+    console.log('world');&#13;
+  }&#13;
+}&#13;
+&#13;
+Foo.bar() // hello</a>
+</h3>
+<h3 class="topic">
+<a name="1o0mts0qbc90nsdhodhcd1bvq9">&nbsp;父类的静态方法，可以被子类继承</a>
+</h3>
+<h3 class="topic">
+<a name="53b9165gmfquo7fornmm1g200c">&nbsp;&nbsp;class Foo {&#13;
+  static classMethod() {&#13;
+    return 'hello';&#13;
+  }&#13;
+}&#13;
+&#13;
+class Bar extends Foo {&#13;
+}&#13;
+&#13;
+Bar.classMethod() // 'hello'</a>
+</h3>
+<h3 class="topic">
+<a name="11lo15tqtmq451njdlm106c13i">&nbsp;静态方法也是可以从super对象上调用的</a>
+</h3>
+<h3 class="topic">
+<a name="3mufdll5nmu0sppjiup63c7vmr">&nbsp;&nbsp;class Foo {&#13;
+  static classMethod() {&#13;
+    return 'hello';&#13;
+  }&#13;
+}&#13;
+&#13;
+class Bar extends Foo {&#13;
+  static classMethod() {&#13;
+    return super.classMethod() + ', too';&#13;
+  }&#13;
+}&#13;
+&#13;
+Bar.classMethod() // "hello, too"</a>
+</h3>
+<h2 class="topic">
+<a name="0efq3tu9606r02avve1o8p49ff">Class 的静态属性和实例属性</a>
+</h2>
+<h3 class="topic">
+<a name="71hpfelo5i3u42qhe22qh2hq60">&nbsp;静态属性指的是 Class 本身的属性，即Class.propName，而不是定义在实例对象（this）上的属性</a>
+</h3>
+<h3 class="topic">
+<a name="29lbq7c6muqugvlb3029p9g3js">&nbsp;&nbsp;class Foo {&#13;
+}&#13;
+&#13;
+Foo.prop = 1;&#13;
+Foo.prop // 1</a>
+</h3>
+<h3 class="topic">
+<a name="09rnipbstnjks8gp30e4gllfgr">&nbsp;&nbsp;class MyClass {&#13;
+  static myStaticProp = 42;&#13;
+&#13;
+  constructor() {&#13;
+    console.log(MyClass.myStaticProp); // 42&#13;
+  }&#13;
+}</a>
+</h3>
+<h3 class="topic">
+<a name="2olbsrs38pql7bdfmhqkn37oum">&nbsp;&nbsp;// 以下两种写法都无效&#13;
+class Foo {&#13;
+  // 写法一&#13;
+  prop: 2&#13;
+&#13;
+  // 写法二&#13;
+  static prop: 2&#13;
+}&#13;
+&#13;
+Foo.prop // undefined</a>
+</h3>
+<h3 class="topic">
+<a name="7q1m17olqi454pmbtk0abh5uu9">&nbsp;类的实例属性，类的实例属性可以用等式，写入类的定义之中</a>
+</h3>
+<h3 class="topic">
+<a name="232c8fhr0mlcgt8lqvlpir4n2b">&nbsp;&nbsp;class MyClass {&#13;
+  myProp = 42;&#13;
+&#13;
+  constructor() {&#13;
+    console.log(this.myProp); // 42&#13;
+  }&#13;
+}</a>
+</h3>
+<h3 class="topic">
+<a name="54jihjlb7dd55sdt9on1rp8566">&nbsp;&nbsp;&nbsp;上面代码中，myProp就是MyClass的实例属性。在MyClass的实例上，可以读取这个属性</a>
+</h3>
+<h2 class="topic">
+<a name="6p9l4l08eg9e8or6h7aifnd3m3">Class 的 Generator 方法</a>
+</h2>
+<h3 class="topic">
+<a name="6ptac09godhjjctkuvcs105kn2">&nbsp;如果某个方法之前加上星号（*），就表示该方法是一个 Generator 函数</a>
+</h3>
+<h3 class="topic">
+<a name="0kg6aer2v47ugqmj0o6jr6ivmh">&nbsp;&nbsp;class Foo {&#13;
+  constructor(...args) {&#13;
+    this.args = args;&#13;
+  }&#13;
+  * [Symbol.iterator]() {&#13;
+    for (let arg of this.args) {&#13;
+      yield arg;&#13;
+    }&#13;
+  }&#13;
+}&#13;
+&#13;
+for (let x of new Foo('hello', 'world')) {&#13;
+  console.log(x);&#13;
+}&#13;
+// hello&#13;
+// world</a>
+</h3>
+<h2 class="topic">
+<a name="6dlu9gheofc9k6kdup7qmp2v30">new.target属性</a>
+</h2>
+<h3 class="topic">
+<a name="7ckp5kb1cakjt0igljr0fb9dbg">&nbsp;new是从构造函数生成实例的命令。ES6 为new命令引入了一个new.target属性，该属性一般用在在构造函数之中，返回new命令作用于的那个构造函数。如果构造函数不是通过new命令调用的，new.target会返回undefined，因此这个属性可以用来确定构造函数是怎么调用的</a>
+</h3>
+<h3 class="topic">
+<a name="4fk531s6bubgpj1ri90e2nti7c">&nbsp;&nbsp;function Person(name) {&#13;
+  if (new.target !== undefined) {&#13;
+    this.name = name;&#13;
+  } else {&#13;
+    throw new Error('必须使用new生成实例');&#13;
+  }&#13;
+}&#13;
+&#13;
+// 另一种写法&#13;
+function Person(name) {&#13;
+  if (new.target === Person) {&#13;
+    this.name = name;&#13;
+  } else {&#13;
+    throw new Error('必须使用 new 生成实例');&#13;
+  }&#13;
+}&#13;
+&#13;
+var person = new Person('张三'); // 正确&#13;
+var notAPerson = Person.call(person, '张三');  // 报错</a>
+</h3>
+<h3 class="topic">
+<a name="30bq4gkvtss0rula7mmuqv37pk">&nbsp;需要注意的是，子类继承父类时，new.target会返回子类</a>
+</h3>
+<h3 class="topic">
+<a name="0dool5ae00imsamc02usefmvme">&nbsp;&nbsp;class Rectangle {&#13;
+  constructor(length, width) {&#13;
+    console.log(new.target === Rectangle);&#13;
+    // ...&#13;
+  }&#13;
+}&#13;
+&#13;
+class Square extends Rectangle {&#13;
+  constructor(length) {&#13;
+    super(length, length);&#13;
+  }&#13;
+}&#13;
+&#13;
+var obj = new Square(3); // 输出 false</a>
+</h3>
+<h3 class="topic">
+<a name="5kjtdl2ce6rbvq1jap0gbrbjeu">&nbsp;&nbsp;利用这个特点，可以写出不能独立使用、必须继承后才能使用的类</a>
+</h3>
+<h3 class="topic">
+<a name="7g073d4i0odqup0phgtobci0ff">&nbsp;&nbsp;&nbsp;class Shape {&#13;
+  constructor() {&#13;
+    if (new.target === Shape) {&#13;
+      throw new Error('本类不能实例化');&#13;
+    }&#13;
+  }&#13;
+}&#13;
+&#13;
+class Rectangle extends Shape {&#13;
+  constructor(length, width) {&#13;
+    super();&#13;
+    // ...&#13;
+  }&#13;
+}&#13;
+&#13;
+var x = new Shape();  // 报错&#13;
+var y = new Rectangle(3, 4);  // 正确</a>
+</h3>
+</body>
+</html>
